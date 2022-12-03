@@ -1,5 +1,7 @@
 # Advent of code 2022
 
+Puzzles for the [advent of code 2022](https://adventofcode.com/2022).
+
 The project is in Typescript.
 
 The puzzles are in the `src/puzzles` folder.
