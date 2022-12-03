@@ -1,0 +1,14 @@
+import { PuzzleAbstract } from '../utils/puzzle';
+
+type Input = ;
+
+export class Puzzle extends PuzzleAbstract {
+    parse(input: string): Input {
+    }
+
+    partOne() {
+    }
+
+    partTwo() {
+    }
+}
