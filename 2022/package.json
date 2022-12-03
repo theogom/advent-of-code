@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p .",
-    "watch": "tsc -w -p .",
+    "dev": "tsc -w -p .",
     "start": "node build/index.js"
   },
   "dependencies": {},
