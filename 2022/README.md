@@ -1,6 +1,10 @@
 # Advent of code 2022
 
-Puzzle are in Typescript.
+The project is in Typescript.
+
+The puzzles are in the `src/puzzles` folder.
+
+The inputs are in the `inputs` folder.
 
 ## Commands
 
