@@ -1,14 +1,17 @@
 import { PuzzleAbstract } from '../utils/puzzle';
 
-type Input = ;
+type Input = string;
 
 export class Puzzle extends PuzzleAbstract {
     parse(input: string): Input {
+        return '';
     }
 
     partOne() {
+        return 0;
     }
 
     partTwo() {
+        return 0;
     }
 }
