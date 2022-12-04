@@ -8,3 +8,6 @@ ifndef DAY
 else
 	@python3 $(SRC_DIR)/main.py --day $(DAY)
 endif
+
+init: init.sh
+	@./init.sh
