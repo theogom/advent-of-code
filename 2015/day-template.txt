@@ -1,0 +1,14 @@
+from .day import DayAbstract
+
+class Day(DayAbstract):
+    def __init__(self, data: str) -> None:
+        super().__init__(data)
+
+    def parse(self, data):
+        return data
+
+    def part_one(self):
+        return ''
+
+    def part_two(self):
+        return ''
