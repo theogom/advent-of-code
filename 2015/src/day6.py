@@ -1,14 +1,14 @@
 from day_abstract import DayAbstract
 
 
-class Day(DayAbstract):
+class Day6(DayAbstract):
     def __init__(self, data: str) -> None:
         super().__init__(data)
 
-    def parse(self, data: str) -> list[dict]:
+    def parse(self) -> list[dict]:
         instructions = []
 
-        for line in data.split("\n"):
+        for line in self.data.split("\n"):
             strings = line.split(" ")
 
             if (len(strings)) == 5:
@@ -29,10 +29,11 @@ class Day(DayAbstract):
         return instructions
 
     def part_one(self) -> int:
+        instuctions = self.parse()
         dimension = 1000
         grid = [False for _ in range(dimension * dimension)]
 
-        for instuction in self.data:
+        for instuction in instuctions:
             for y in range(instuction["start"]["y"], instuction["end"]["y"] + 1):
                 for x in range(instuction["start"]["x"], instuction["end"]["x"] + 1):
                     index = y * dimension + x
@@ -45,10 +46,11 @@ class Day(DayAbstract):
         return grid.count(True)
 
     def part_two(self) -> int:
+        instuctions = self.parse()
         dimension = 1000
         grid = [0 for _ in range(dimension * dimension)]
 
-        for instuction in self.data:
+        for instuction in instuctions:
             for y in range(instuction["start"]["y"], instuction["end"]["y"] + 1):
                 for x in range(instuction["start"]["x"], instuction["end"]["x"] + 1):
                     index = y * dimension + x

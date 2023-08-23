@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class DayAbstract(ABC):
     def __init__(self, data: str) -> None:
         self.data = data
 
-    def parse(self) -> str:
+    def parse(self) -> Any:
         return self.data
 
     @abstractmethod
