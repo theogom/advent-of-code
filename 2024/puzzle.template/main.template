@@ -1,0 +1,43 @@
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func getInputPath(day int) string {
+	return fmt.Sprintf("inputs/input%d.txt", day)
+}
+
+func getInput(day int) string {
+	filePath := getInputPath(day)
+	data, err := os.ReadFile(filePath)
+
+	checkErr(err)
+
+	return string(data)
+}
+
+func partOne(day int) int {
+	return 0
+}
+
+func partTwo(day int) int {
+	return 0
+}
+
+func main() {
+	day := 0
+	
+	partOne := partOne(day)
+	fmt.Printf("Part one: %d\n", partOne)
+
+	partTwo := partTwo(day)
+	fmt.Printf("Part two: %d\n", partTwo)
+}
