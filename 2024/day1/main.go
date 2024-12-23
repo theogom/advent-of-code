@@ -50,8 +50,8 @@ func abs(x int) int {
 	return x
 }
 
-func parseInt(s string) int {
-	integer, err := strconv.Atoi(s)
+func parseInt(input string) int {
+	integer, err := strconv.Atoi(input)
 
 	checkErr(err)
 

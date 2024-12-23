@@ -30,8 +30,8 @@ func getInput(day int) string {
 	return string(data)
 }
 
-func parseInt(s string) int {
-	integer, err := strconv.Atoi(s)
+func parseInt(input string) int {
+	integer, err := strconv.Atoi(input)
 
 	checkErr(err)
 
