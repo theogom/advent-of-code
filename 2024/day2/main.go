@@ -115,7 +115,7 @@ func partOne(day int) int {
 		report := parseReport(line)
 
 		if isReportSafe(report, 0) {
-			safeReportCount += 1
+			safeReportCount++
 		}
 	}
 
@@ -131,7 +131,7 @@ func partTwo(day int) int {
 		report := parseReport(line)
 
 		if isReportSafe(report, 1) {
-			safeReportCount += 1
+			safeReportCount++
 		}
 	}
 

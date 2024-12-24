@@ -62,7 +62,7 @@ func getItemsCount(items []int) map[int]int {
 	counts := make(map[int]int)
 
 	for _, item := range items {
-		counts[item] += 1
+		counts[item]++
 	}
 
 	return counts
