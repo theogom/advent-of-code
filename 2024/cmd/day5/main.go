@@ -1,36 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	utils "advent-of-code/2024/internal"
 	"slices"
-	"strconv"
 	"strings"
 )
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+func parseSections(input string) ([]string, []string) {
+	sections := strings.Split(input, "\n\n")
 
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func parseInput(input string) ([]string, []string) {
-	sections := strings.Split(input, "\r\n\r\n")
-
-	return parseLines(sections[0]), parseLines(sections[1])
+	return utils.ParseLines(sections[0]), utils.ParseLines(sections[1])
 }
 
 // Parse the order section
@@ -52,18 +31,6 @@ func parseOrders(rawOrders []string) map[string][]string {
 // @return The list of update
 func parseUpdate(rawUpdate string) []string {
 	return strings.Split(rawUpdate, ",")
-}
-
-func parseInt(input string) int {
-	integer, err := strconv.Atoi(input)
-
-	checkErr(err)
-
-	return integer
-}
-
-func parseLines(input string) []string {
-	return strings.Split(input, "\r\n")
 }
 
 func getComparePages(orders map[string][]string) func(a string, b string) int {
@@ -97,12 +64,12 @@ func sortPages(pages []string, orders map[string][]string) []string {
 }
 
 func getMiddlePage(pages []string) int {
-	return parseInt(pages[len(pages)/2])
+	return utils.ParseInt(pages[len(pages)/2])
 }
 
 func partOne(day int) int {
-	input := getInput(day)
-	rawOrders, rawUpdates := parseInput(input)
+	input := utils.GetInput(day)
+	rawOrders, rawUpdates := parseSections(input)
 	orders := parseOrders(rawOrders)
 
 	isSorted := getComparePages(orders)
@@ -121,8 +88,8 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
-	rawOrders, rawUpdates := parseInput(input)
+	input := utils.GetInput(day)
+	rawOrders, rawUpdates := parseSections(input)
 	orders := parseOrders(rawOrders)
 	isSorted := getComparePages(orders)
 
@@ -141,11 +108,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 5
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(5, partOne, partTwo)
 }

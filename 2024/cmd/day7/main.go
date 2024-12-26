@@ -1,9 +1,8 @@
 package main
 
 import (
+	utils "advent-of-code/2024/internal"
 	"fmt"
-	"os"
-	"strconv"
 	"strings"
 )
 
@@ -20,45 +19,14 @@ const (
 	Concat
 )
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func parseInt(input string) int {
-	integer, err := strconv.Atoi(input)
-
-	checkErr(err)
-
-	return integer
-}
-
-func parseLines(input string) []string {
-	return strings.Split(input, "\n")
-}
-
 func parseEquation(input string) Equation {
 	elements := strings.Split(input, " ")
-	result := parseInt(strings.TrimSuffix(elements[0], ":"))
+	result := utils.ParseInt(strings.TrimSuffix(elements[0], ":"))
 
 	operands := make([]int, len(elements)-1)
 
 	for i, operand := range elements[1:] {
-		operands[i] = parseInt(operand)
+		operands[i] = utils.ParseInt(operand)
 	}
 
 	return Equation{Operands: operands, Result: result}
@@ -71,7 +39,7 @@ func calculate(operator Operator, firstOperand int, secondOperand int) int {
 	case Mul:
 		return firstOperand * secondOperand
 	case Concat:
-		return parseInt(fmt.Sprintf("%d%d", firstOperand, secondOperand))
+		return utils.ParseInt(fmt.Sprintf("%d%d", firstOperand, secondOperand))
 	}
 
 	panic(fmt.Sprintf("Invalid operator %d", operator))
@@ -99,8 +67,8 @@ func (equation Equation) solvable(operators []Operator) bool {
 }
 
 func partOne(day int) int {
-	input := getInput(day)
-	lines := parseLines(input)
+	input := utils.GetInput(day)
+	lines := utils.ParseLines(input)
 	result := 0
 
 	for _, line := range lines {
@@ -115,8 +83,8 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
-	lines := parseLines(input)
+	input := utils.GetInput(day)
+	lines := utils.ParseLines(input)
 	result := 0
 
 	for _, line := range lines {
@@ -131,11 +99,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 7
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(7, partOne, partTwo)
 }

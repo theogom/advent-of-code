@@ -1,46 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"strconv"
+	utils "advent-of-code/2024/internal"
 	"strings"
 )
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-
-	return x
-}
-
-func parseInt(input string) int {
-	integer, err := strconv.Atoi(input)
-
-	checkErr(err)
-
-	return integer
-}
 
 func remove(slice []int, removedIndex int) []int {
 	sliceCopy := make([]int, len(slice)-1)
@@ -63,7 +26,7 @@ func parseReport(input string) []int {
 	report := make([]int, len(levels))
 
 	for i, level := range levels {
-		report[i] = parseInt(level)
+		report[i] = utils.ParseInt(level)
 	}
 
 	return report
@@ -96,7 +59,7 @@ func isReportSafe(report []int, toleratedErrorCount int) bool {
 			return isReportSafeWithError(report, toleratedErrorCount, i)
 		}
 
-		difference := abs(report[i] - report[i+1])
+		difference := utils.Abs(report[i] - report[i+1])
 
 		if difference < 1 || difference > 3 {
 			return isReportSafeWithError(report, toleratedErrorCount, i)
@@ -107,8 +70,8 @@ func isReportSafe(report []int, toleratedErrorCount int) bool {
 }
 
 func partOne(day int) int {
-	input := getInput(day)
-	lines := strings.Split(input, "\r\n")
+	input := utils.GetInput(day)
+	lines := utils.ParseLines(input)
 	safeReportCount := 0
 
 	for _, line := range lines {
@@ -123,8 +86,8 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
-	lines := strings.Split(input, "\r\n")
+	input := utils.GetInput(day)
+	lines := utils.ParseLines(input)
 	safeReportCount := 0
 
 	for _, line := range lines {
@@ -139,11 +102,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 2
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(2, partOne, partTwo)
 }

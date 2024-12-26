@@ -1,9 +1,8 @@
 package main
 
 import (
+	utils "advent-of-code/2024/internal"
 	"fmt"
-	"os"
-	"strings"
 )
 
 type Point = rune
@@ -43,31 +42,8 @@ const (
 	Right
 )
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func parseLines(input string) []string {
-	return strings.Split(input, "\r\n")
-}
-
 func parseGrid(input string) (Grid, Guard) {
-	lines := parseLines(input)
+	lines := utils.ParseLines(input)
 	size := Size{Height: len(lines)}
 	points := make([][]rune, size.Height)
 
@@ -216,7 +192,7 @@ func (guard *Guard) VisitGrid(grid Grid) bool {
 }
 
 func partOne(day int) int {
-	input := getInput(day)
+	input := utils.GetInput(day)
 	grid, guard := parseGrid(input)
 
 	guard.VisitGrid(grid)
@@ -225,7 +201,7 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
+	input := utils.GetInput(day)
 	grid, guard := parseGrid(input)
 	possibleObstructionCount := 0
 
@@ -250,11 +226,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 6
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(6, partOne, partTwo)
 }

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"strings"
+	utils "advent-of-code/2024/internal"
 )
 
 type HorizontalDirection int
@@ -39,27 +37,8 @@ const (
 
 var Directions = [...]Direction{{Left, Up}, {Left, VerticalNone}, {Left, Down}, {HorizontalNone, Up}, {HorizontalNone, Down}, {Right, Up}, {Right, VerticalNone}, {Right, Down}}
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func parseInput(input string) Grid {
-	letters := strings.Split(input, "\r\n")
+func parseGrid(input string) Grid {
+	letters := utils.ParseLines(input)
 
 	height := len(letters)
 
@@ -114,8 +93,8 @@ func hasWord(grid Grid, word string, cursor Point, direction Direction) bool {
 }
 
 func partOne(day int) int {
-	input := getInput(day)
-	grid := parseInput(input)
+	input := utils.GetInput(day)
+	grid := parseGrid(input)
 
 	word := "XMAS"
 	wordCount := 0
@@ -134,8 +113,8 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
-	grid := parseInput(input)
+	input := utils.GetInput(day)
+	grid := parseGrid(input)
 
 	word := "MAS"
 	wordCount := 0
@@ -159,11 +138,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 4
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(4, partOne, partTwo)
 }

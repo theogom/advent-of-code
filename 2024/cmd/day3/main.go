@@ -1,59 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	utils "advent-of-code/2024/internal"
 	"regexp"
-	"strconv"
 )
 
 var mulRegex = regexp.MustCompile(`mul\((\d+),(\d+)\)`)
 var doReversedRegex = regexp.MustCompile(`\)\(od`)
 var dontReversedRegex = regexp.MustCompile(`\)\(t'nod`)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getInputPath(day int) string {
-	return fmt.Sprintf("inputs/input%d.txt", day)
-}
-
-func getInput(day int) string {
-	filePath := getInputPath(day)
-	data, err := os.ReadFile(filePath)
-
-	checkErr(err)
-
-	return string(data)
-}
-
-func parseInt(input string) int {
-	integer, err := strconv.Atoi(input)
-
-	checkErr(err)
-
-	return integer
-}
-
 func mul(instruction []string) int {
-	return parseInt(instruction[1]) * parseInt(instruction[2])
-}
-
-func reverse(s string) string {
-	reversed := []rune(s)
-
-	for i, j := 0, len(reversed)-1; i < j; i, j = i+1, j-1 {
-		reversed[i], reversed[j] = reversed[j], reversed[i]
-	}
-
-	return string(reversed)
+	return utils.ParseInt(instruction[1]) * utils.ParseInt(instruction[2])
 }
 
 func partOne(day int) int {
-	input := getInput(day)
+	input := utils.GetInput(day)
 	regex := regexp.MustCompile(`mul\((\d+),(\d+)\)`)
 	instructions := regex.FindAllStringSubmatch(input, -1)
 
@@ -67,8 +28,8 @@ func partOne(day int) int {
 }
 
 func partTwo(day int) int {
-	input := getInput(day)
-	reversedInput := reverse(input)
+	input := utils.GetInput(day)
+	reversedInput := utils.Reverse(input)
 
 	cursor := 0
 	var reversedCursor int
@@ -106,11 +67,5 @@ func partTwo(day int) int {
 }
 
 func main() {
-	day := 3
-
-	partOne := partOne(day)
-	fmt.Printf("Part one: %d\n", partOne)
-
-	partTwo := partTwo(day)
-	fmt.Printf("Part two: %d\n", partTwo)
+	utils.Solve(3, partOne, partTwo)
 }
