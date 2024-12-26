@@ -21,9 +21,6 @@ def get_input(index: int):
 
 
 def run(index: int) -> None:
-    if not isinstance(index, int):
-        raise ValueError(f"Error: index must be an int, ${type(index)} found.")
-
     try:
         Day = get_day(index)
     except AttributeError:
