@@ -2,6 +2,7 @@ package main
 
 import (
 	utils "advent-of-code/2024/internal"
+	"errors"
 	"fmt"
 )
 
@@ -91,40 +92,47 @@ func getDualAntinodes(firstAntenna, secondAntenna Position) [2]Position {
 	}
 }
 
-func getLineFunction(firstPosition, secondPosition Position) func(int) Position {
+func getLineFunction(firstPosition, secondPosition Position) func(int) (Position, error) {
 	if firstPosition.X == secondPosition.X {
 		// Works because the definition domain of x is the same as the y one
-		return func(x int) Position {
-			return Position{X: firstPosition.X, Y: x}
+		return func(x int) (Position, error) {
+			return Position{X: firstPosition.X, Y: x}, nil
 		}
 	}
 
 	if firstPosition.Y == secondPosition.Y {
-		return func(x int) Position {
-			return Position{X: x, Y: firstPosition.Y}
+		return func(x int) (Position, error) {
+			return Position{X: x, Y: firstPosition.Y}, nil
 		}
 	}
 
-	xCoefficient := utils.Abs(secondPosition.Y - firstPosition.Y)
-	yCoefficient := utils.Abs(secondPosition.X - firstPosition.X)
-	yIntercept := float32(firstPosition.Y) - float32(slope*float32(firstPosition.X))
+	xSlope := secondPosition.X - firstPosition.X
+	ySlope := secondPosition.Y - firstPosition.Y
 
-	fmt.Println(firstPosition, secondPosition)
-	fmt.Printf("f(y) = %fx + %f\n", slope, yIntercept)
+	return func(x int) (Position, error) {
+		numerator := ySlope*x - ySlope*firstPosition.X
 
-	return func(x int) Position {
-		return Position{X: x, Y: int(slope*float32(x) + yIntercept)}
+		// Check if y will be defined on the grid (i.e. an integer)
+		if numerator%xSlope != 0 {
+			return Position{}, errors.New("undefined point")
+		}
+
+		return Position{X: x, Y: numerator/xSlope + firstPosition.Y}, nil
 	}
 }
 
 // Get the lined antinodes of two antennas
 // Lined antinode is a point in line with the two antennas
 func getLinedAntinodes(size int, firstAntenna, secondAntenna Position) []Position {
-	lineFunction := getLineFunction(firstAntenna, secondAntenna)
+	lineFunction := getLineFunction(secondAntenna, firstAntenna)
 	antinodes := []Position{}
 
 	for x := 0; x < size; x++ {
-		antinodes = append(antinodes, lineFunction(x))
+		antinode, err := lineFunction(x)
+
+		if err == nil {
+			antinodes = append(antinodes, antinode)
+		}
 	}
 
 	return antinodes
@@ -167,7 +175,6 @@ func partTwo(day int) int {
 						antinodes[antinode] = struct{}{}
 					}
 				}
-				grid.Show()
 			}
 		}
 	}
