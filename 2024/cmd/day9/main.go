@@ -2,11 +2,14 @@ package main
 
 import (
 	utils "advent-of-code/2024/internal"
+	"fmt"
 )
 
-const EmptyBlock = -1
+const FreeBlock = -1
 
-func toDisk(diskMap string) []int {
+type Disk []int
+
+func toDisk(diskMap string) Disk {
 	disk := []int{}
 	isFile := true
 	fileId := 0
@@ -18,7 +21,7 @@ func toDisk(diskMap string) []int {
 			block = fileId
 			fileId++
 		} else {
-			block = EmptyBlock
+			block = FreeBlock
 		}
 
 		for i := 0; i < utils.ParseInt(string(code)); i++ {
@@ -31,7 +34,7 @@ func toDisk(diskMap string) []int {
 	return disk
 }
 
-func compactBlocks(disk []int) []int {
+func (disk Disk) CompactBlocks() Disk {
 	leftCursor := 0
 	rightCursor := len(disk) - 1
 	emptyBlockFound := false
@@ -40,18 +43,18 @@ func compactBlocks(disk []int) []int {
 	for leftCursor < rightCursor {
 		if emptyBlockFound && fileBlockFound {
 			disk[leftCursor] = disk[rightCursor]
-			disk[rightCursor] = EmptyBlock
+			disk[rightCursor] = FreeBlock
 			emptyBlockFound = false
 			fileBlockFound = false
 		}
 
-		if disk[leftCursor] == EmptyBlock {
+		if disk[leftCursor] == FreeBlock {
 			emptyBlockFound = true
 		} else {
 			leftCursor++
 		}
 
-		if disk[rightCursor] != EmptyBlock {
+		if disk[rightCursor] != FreeBlock {
 			fileBlockFound = true
 		} else {
 			rightCursor--
@@ -61,22 +64,115 @@ func compactBlocks(disk []int) []int {
 	return disk
 }
 
-func getChecksum(disk []int) int {
+func (disk Disk) CompactFiles() Disk {
+	cursor := len(disk) - 1
+
+	for cursor >= 0 {
+		fileEndIndex := disk.FindFile(cursor)
+
+		if fileEndIndex == -1 {
+			break
+		}
+
+		fileSize := disk.GetFileSize(fileEndIndex)
+		fileStartIndex := fileEndIndex - fileSize + 1
+		freeSpaceStartIndex := disk.FindFreeSpace(fileSize, fileEndIndex)
+
+		if freeSpaceStartIndex != -1 {
+			disk = disk.MoveFile(fileStartIndex, freeSpaceStartIndex, fileSize)
+		}
+
+		cursor = fileStartIndex - 1
+	}
+
+	return disk
+}
+
+func (disk Disk) GetChecksum() int {
 	checksum := 0
 
-	for i := 0; i < len(disk) && disk[i] != EmptyBlock; i++ {
-		checksum += disk[i] * i
+	for i := 0; i < len(disk); i++ {
+		if disk[i] != FreeBlock {
+			checksum += disk[i] * i
+		}
 	}
 
 	return checksum
+}
+
+// Get the file size given its end index
+func (disk Disk) GetFileSize(endIndex int) int {
+	block := disk[endIndex]
+	size := 0
+
+	for endIndex >= 0 && endIndex < len(disk) && disk[endIndex] == block {
+		size++
+		endIndex--
+	}
+
+	return size
+}
+
+// Find the rightmost file up to the given index
+func (disk Disk) FindFile(maxIndex int) int {
+	for i := maxIndex; i >= 0; i-- {
+		if disk[i] != FreeBlock {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func (disk Disk) FindFreeSpace(fileSize, maxIndex int) int {
+	freeSpaceSize := 0
+	freeSpaceIndex := -1
+
+	for i := 0; i < maxIndex; i++ {
+		if disk[i] != FreeBlock {
+			freeSpaceSize = 0
+			freeSpaceIndex = i + 1
+		} else {
+			freeSpaceSize++
+		}
+
+		if freeSpaceSize == fileSize {
+			return freeSpaceIndex
+		}
+	}
+
+	return -1
+}
+
+func (disk Disk) MoveFile(sourceIndex, destinationIndex, size int) Disk {
+	block := disk[sourceIndex]
+
+	for i := 0; i < size; i++ {
+		disk[sourceIndex+i] = FreeBlock
+		disk[destinationIndex+i] = block
+	}
+
+	return disk
+}
+
+func (disk Disk) Dump() {
+	for i := 0; i < len(disk); i++ {
+		if disk[i] == FreeBlock {
+			fmt.Print(".")
+		} else {
+			fmt.Print(disk[i])
+		}
+	}
+
+	fmt.Println()
 }
 
 func partOne(day int) int {
 	diskMap := utils.GetInput(day)
 
 	disk := toDisk(diskMap)
-	compactedDisk := compactBlocks(disk)
-	checksum := getChecksum(compactedDisk)
+	compactedDisk := disk.CompactBlocks()
+	checksum := compactedDisk.GetChecksum()
 
 	return checksum
 }
@@ -85,8 +181,8 @@ func partTwo(day int) int {
 	diskMap := utils.GetInput(day)
 
 	disk := toDisk(diskMap)
-	compactedDisk := compactBlocks(disk)
-	checksum := getChecksum(compactedDisk)
+	compactedDisk := disk.CompactFiles()
+	checksum := compactedDisk.GetChecksum()
 
 	return checksum
 }
