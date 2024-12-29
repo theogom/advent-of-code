@@ -2,7 +2,6 @@ package main
 
 import (
 	utils "advent-of-code/2024/internal"
-	"fmt"
 	"math"
 	"strings"
 )
@@ -17,7 +16,7 @@ func parseStones(input string) []int {
 	return stones
 }
 
-func getDigits(n int) int {
+func getDigitCount(n int) int {
 	if n == 0 {
 		return 1
 	}
@@ -36,48 +35,92 @@ func getDigits(n int) int {
 	return count
 }
 
-func blink(stones []int) []int {
-	blinkedStones := []int{}
+func naiveBlinkStones(stones []int, blinkCount int) int {
+	for i := 0; i < blinkCount; i++ {
+		blinkedStones := []int{}
 
-	for _, stone := range stones {
-		if stone == 0 {
-			blinkedStones = append(blinkedStones, 1)
-		} else if digits := getDigits(stone); digits%2 == 0 {
-			divisor := int(math.Pow10(digits / 2))
-			blinkedStones = append(blinkedStones, stone/divisor)
-			blinkedStones = append(blinkedStones, stone%divisor)
-		} else {
-			blinkedStones = append(blinkedStones, stone*2024)
+		for _, stone := range stones {
+			leftStone, rightStone, splitted := blinkStone(stone)
+			blinkedStones = append(blinkedStones, leftStone)
+
+			if splitted {
+				blinkedStones = append(blinkedStones, rightStone)
+			}
 		}
+
+		stones = blinkedStones
 	}
 
-	return blinkedStones
+	return len(stones)
+}
+
+func smartBlinkStones(stones []int, blinkCount int) int {
+	blinkedStones := make(map[int]map[int]int)
+	stoneCount := 0
+
+	for _, stone := range stones {
+		stoneCount += smartBlinkStone(stone, blinkCount, blinkedStones)
+	}
+
+	return stoneCount
+}
+
+func blinkStone(stone int) (int, int, bool) {
+	if stone == 0 {
+		return 1, 0, false
+	}
+
+	if digitCount := getDigitCount(stone); digitCount%2 == 0 {
+		divisor := int(math.Pow10(digitCount / 2))
+
+		return stone / divisor, stone % divisor, true
+	}
+
+	return stone * 2024, 0, false
+}
+
+func smartBlinkStone(stone int, blinkCount int, blinkedStones map[int]map[int]int) int {
+	if blinkCount == 0 {
+		return 1
+	}
+
+	if blinkedStones[stone][blinkCount] > 0 {
+		return blinkedStones[stone][blinkCount]
+	}
+
+	leftStone, rightStone, splitted := blinkStone(stone)
+
+	var stoneCount int
+
+	if splitted {
+		stoneCount = smartBlinkStone(leftStone, blinkCount-1, blinkedStones) + smartBlinkStone(rightStone, blinkCount-1, blinkedStones)
+	} else {
+		stoneCount = smartBlinkStone(leftStone, blinkCount-1, blinkedStones)
+	}
+
+	if _, ok := blinkedStones[stone]; !ok {
+		blinkedStones[stone] = make(map[int]int)
+	}
+
+	blinkedStones[stone][blinkCount] = stoneCount
+
+	return stoneCount
 }
 
 func partOne(day int) int {
 	input := utils.GetInput(day)
 	stones := parseStones(input)
-	blinkCount := 10
+	blinkCount := 25
 
-	for i := 0; i < blinkCount; i++ {
-		fmt.Println("blink", i, "len", len(stones))
-		stones = blink(stones)
-	}
-
-	return len(stones)
+	return naiveBlinkStones(stones, blinkCount)
 }
 
 func partTwo(day int) int {
 	input := utils.GetInput(day)
 	stones := parseStones(input)
-	blinkCount := 0
+	blinkCount := 75
 
-	for i := 0; i < blinkCount; i++ {
-		stones = blink(stones)
-		fmt.Println("blink", i)
-	}
-
-	return len(stones)
+	return smartBlinkStones(stones, blinkCount)
 }
 
 func main() {
