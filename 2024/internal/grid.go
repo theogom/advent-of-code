@@ -1,6 +1,9 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Direction int
 
@@ -16,7 +19,8 @@ type Grid struct {
 }
 
 const (
-	Up Direction = iota
+	NoneDirection Direction = iota
+	Up
 	Down
 	Left
 	Right
@@ -45,12 +49,28 @@ func (grid Grid) IsOutOfBounds(position Position) bool {
 	return position.X < 0 || position.X >= grid.Size || position.Y < 0 || position.Y >= grid.Size
 }
 
+func (grid Grid) String() string {
+	builder := strings.Builder{}
+
+	for y := 0; y < grid.Size; y++ {
+		for x := 0; x < grid.Size; x++ {
+			builder.WriteRune(rune(grid.GetPoint(Position{X: x, Y: y})))
+		}
+
+		if y < grid.Size-1 {
+			builder.WriteString("\n")
+		}
+	}
+
+	return builder.String()
+}
+
 func (point Point) String() string {
 	return string(point)
 }
 
 // Get the next position in the given direction.
-func (position Position) Next(direction Direction) Position {
+func (position Position) Move(direction Direction) Position {
 	switch direction {
 	case Left:
 		return Position{X: position.X - 1, Y: position.Y}
@@ -63,4 +83,20 @@ func (position Position) Next(direction Direction) Position {
 	}
 
 	panic(fmt.Sprint("Invalid direction", direction))
+}
+
+func ParseGrid(input string) Grid {
+	lines := ParseLines(input)
+	size := len(lines)
+	points := make([][]Point, size)
+
+	for y, line := range lines {
+		points[y] = make([]Point, size)
+
+		for x, point := range line {
+			points[y][x] = Point(point)
+		}
+	}
+
+	return Grid{Points: points, Size: size}
 }

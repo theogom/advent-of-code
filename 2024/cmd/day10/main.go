@@ -44,7 +44,7 @@ func findTerminuses(grid utils.Grid, position utils.Position) map[utils.Position
 	terminuses := make(map[utils.Position]int)
 
 	for _, direction := range directions {
-		nextPosition := position.Next(direction)
+		nextPosition := position.Move(direction)
 
 		if grid.IsOutOfBounds(nextPosition) {
 			continue
@@ -69,25 +69,9 @@ func findTerminuses(grid utils.Grid, position utils.Position) map[utils.Position
 	return terminuses
 }
 
-func parseGrid(input string) utils.Grid {
-	lines := utils.ParseLines(input)
-	size := len(lines)
-	points := make([][]utils.Point, size)
-
-	for y, line := range lines {
-		points[y] = make([]utils.Point, size)
-
-		for x, point := range line {
-			points[y][x] = utils.Point(point)
-		}
-	}
-
-	return utils.Grid{Points: points, Size: size}
-}
-
 func partOne(day int) int {
 	input := utils.GetInput(day)
-	grid := parseGrid(input)
+	grid := utils.ParseGrid(input)
 
 	score := 0
 
@@ -100,7 +84,7 @@ func partOne(day int) int {
 
 func partTwo(day int) int {
 	input := utils.GetInput(day)
-	grid := parseGrid(input)
+	grid := utils.ParseGrid(input)
 
 	rating := 0
 
