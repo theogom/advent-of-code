@@ -26,9 +26,14 @@ char *get_input()
     return buffer;
 }
 
-int positive_modulo(int a, int b)
+int rotate(int dial, char direction)
 {
-    return ((a % b) + b) % b;
+    dial = dial + direction;
+    return dial < 0
+               ? DIAL_SIZE - 1
+           : dial >= DIAL_SIZE
+               ? 0
+               : dial;
 }
 
 int main()
@@ -48,17 +53,19 @@ int main()
     {
         char direction = instruction[0] == 'L' ? -1 : 1;
         int distance = atoi(instruction + 1);
-        int rotation = direction * distance;
 
-        dial = positive_modulo(dial + rotation, DIAL_SIZE);
-
-        if (dial == 0)
+        for (size_t i = 0; i < distance; i++)
         {
-            password++;
+            dial = rotate(dial, direction);
+
+            if (dial == 0)
+            {
+                password++;
+            }
         }
     }
 
-    printf("Day 1 Part 1: %i\n", password);
+    printf("Day 1 Part 2: %i\n", password);
 
     return EXIT_SUCCESS;
 }
