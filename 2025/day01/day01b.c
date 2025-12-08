@@ -6,7 +6,7 @@
 
 char *get_input()
 {
-    FILE *file = fopen("../inputs/input01.txt", "rb");
+    FILE *file = fopen("inputs/input01.txt", "rb");
 
     if (!file)
     {
@@ -52,7 +52,7 @@ int main()
     for (char *instruction = strtok(input, "\n"); instruction != NULL; instruction = strtok(NULL, "\n"))
     {
         char direction = instruction[0] == 'L' ? -1 : 1;
-        int distance = atoi(instruction + 1);
+        unsigned int distance = atoi(instruction + 1);
 
         for (size_t i = 0; i < distance; i++)
         {

@@ -4,7 +4,7 @@
 
 char *get_input()
 {
-    FILE *file = fopen("../inputs/input03.txt", "rb");
+    FILE *file = fopen("inputs/input03.txt", "rb");
 
     if (!file)
     {
@@ -26,7 +26,7 @@ char *get_input()
 
 size_t max(char *values, size_t start_index, size_t end_index)
 {
-    char max_index = start_index;
+    size_t max_index = start_index;
 
     for (size_t i = start_index; i < end_index; i++)
     {

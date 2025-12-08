@@ -11,7 +11,7 @@ typedef struct
 
 char *get_input()
 {
-    FILE *file = fopen("../inputs/input04.txt", "rb");
+    FILE *file = fopen("inputs/input04.txt", "rb");
 
     if (!file)
     {
@@ -37,10 +37,10 @@ Grid *parse_grid(char *input)
     grid->size = strchr(input, '\n') - input;
     grid->cells = malloc(grid->size * sizeof(bool *));
 
-    for (size_t y = 0; y < grid->size; y++)
+    for (int y = 0; y < grid->size; y++)
     {
         grid->cells[y] = malloc(grid->size * sizeof(bool));
-        for (size_t x = 0; x < grid->size; x++)
+        for (int x = 0; x < grid->size; x++)
         {
             grid->cells[y][x] = input[y * (grid->size + 1) + x] == '@';
         }
@@ -51,7 +51,7 @@ Grid *parse_grid(char *input)
 
 void free_grid(Grid *grid)
 {
-    for (size_t i = 0; i < grid->size; i++)
+    for (int i = 0; i < grid->size; i++)
     {
         free(grid->cells[i]);
     }
@@ -66,7 +66,7 @@ unsigned int count_neighbors(Grid *grid, int x0, int y0)
 
     unsigned int neighbor_count = 0;
 
-    for (size_t i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
         int x = x0 + neighbors[i][0];
         int y = y0 + neighbors[i][1];
@@ -94,9 +94,9 @@ int main()
 
     unsigned int accessible_roll_count = 0;
 
-    for (size_t y = 0; y < grid->size; y++)
+    for (int y = 0; y < grid->size; y++)
     {
-        for (size_t x = 0; x < grid->size; x++)
+        for (int x = 0; x < grid->size; x++)
         {
             if (grid->cells[y][x] && count_neighbors(grid, x, y) < 4)
             {
