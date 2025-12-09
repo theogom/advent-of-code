@@ -114,7 +114,7 @@ int main()
         total_accessible_roll_count += accessible_roll_count;
     } while (accessible_roll_count > 0);
 
-    printf("Day 3 Part 2: %u\n", total_accessible_roll_count);
+    printf("Day 4 Part 2: %u\n", total_accessible_roll_count);
 
     free(input);
     free(grid);

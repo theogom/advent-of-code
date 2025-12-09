@@ -105,7 +105,7 @@ int main()
         }
     }
 
-    printf("Day 3 Part 1: %u\n", accessible_roll_count);
+    printf("Day 4 Part 1: %u\n", accessible_roll_count);
 
     free(input);
     free(grid);
